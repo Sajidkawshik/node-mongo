@@ -41,6 +41,28 @@ app.get('/products', (req, res) => {
     });
 });
 
+app.get('/orders', (req, res) => {
+    client = new MongoClient(uri, { useNewUrlParser: true });
+
+    client.connect(err => {
+        const collection = client.db("onlineStore").collection("orders");
+        // perform actions on the collection object
+        collection.find().toArray((err, documents) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send({ message: err });
+            }
+            else {
+                res.send(documents);
+            }
+
+
+        });
+
+        client.close();
+    });
+});
+
 
 app.get('/product/:key', (req, res) => {
     const key = req.params.key;
@@ -148,4 +170,4 @@ app.post('/placeOrder', (req, res) => {
 });
 
 const port = process.env.PORT || 4200;
-app.listen(port, () => console.log('Listening to port 4200'));
+app.listen(port, () => console.log('Listening to port', port));
